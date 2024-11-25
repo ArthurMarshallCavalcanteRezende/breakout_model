@@ -3,7 +3,7 @@ class Score:
         self.points = 0
         self.attempts = 1
 
-    def reward_hit(self, amount):
+    def reward(self, amount):
         self.points += amount
 
     def penalty(self):

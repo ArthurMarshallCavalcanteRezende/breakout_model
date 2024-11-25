@@ -1,13 +1,11 @@
 # Here is the main code to run the "Game"
 import time
 import keyboard
-import os
 
 from modules import ball
 from modules import paddle
 from modules import score
 from modules import walls
-from modules import blocks
 
 # "Game" is a class, and serves access to all variables inside it along with the main loop
 class Game:
@@ -35,8 +33,9 @@ class Game:
         print("-- Lista de Blocos da última partida --")
         # Blocks last position
         block_positions = self.walls.get_block_positions()
+
         for pos in block_positions:
-            print(f"Block - X: {pos[0]} | Y: {pos[1]}\n")
+            print(f"Block - X: {pos[0]} | Y: {pos[1]}")
 
         # Clearing for menu
         print(self.clear_space_text)
@@ -95,15 +94,11 @@ class Game:
         if attempts >= 4: self.reset_game()
 
         # Updating the ball and checking collisions
+        self.ball.toggle_movement(True)
         self.ball.update()
+        self.ball.paddle_collision(self.paddle)
         self.ball.border_collision(self, self.screen_width, self.screen_height)
-        self.ball.block_collision(self.walls)
-        point_receiver = self.ball.block_collision(self.walls)
-
-        if point_receiver is None:
-            point_receiver = 0
-        elif point_receiver > 0:
-            self.score.reward_hit(point_receiver)
+        self.ball.block_collision(self.walls, self.score)
 
 
     def draw(self):

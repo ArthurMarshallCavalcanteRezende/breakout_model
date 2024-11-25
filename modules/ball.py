@@ -28,10 +28,11 @@ class Ball:
         self.y = BASE_Y
         self.speed_x = BASE_SPEED_X
         self.speed_y = BASE_SPEED_Y
-        self.moving = False
+        self.toggle_movement(False)
 
     def update(self):
         self.wall_tick += 1
+        if self.speed_y > 10: self.speed_y = 10
 
         if self.moving:
             self.x += self.speed_x
@@ -40,8 +41,6 @@ class Ball:
         return self.x, self.y
 
     def border_collision(self, game, max_width, max_height):
-        self.hit_text = None
-
         if self.wall_tick > 15:
             # Checking wall collision
             if self.x <= 0 or self.x + self.width >= max_width:
@@ -56,6 +55,7 @@ class Ball:
                 self.speed_y *= -1
 
                 self.hit_text = '- A bola bateu no teto!'
+                game.paddle.shrink_paddle()
 
             # Checking floor collision
             if self.y + self.height >= max_height:
@@ -63,33 +63,36 @@ class Ball:
                 self.speed_y *= -1
 
                 game.score.penalty()
+                self.reset()
 
                 self.hit_text = '- A bola bateu no chão!'
 
     def draw(self):
-        print('\n||[BALL] X: {:03d} | Y: {:03d}'.format(self.x, self.y))
+        print('\n||[BALL] X: {:03d} | Y: {:03d} | Speed X: {:d},  Speed Y: {:d}'.format(
+            self.x, self.y, self.speed_x, self.speed_y))
         if self.hit_text: print(self.hit_text)
 
-    def block_collision(self, wall):
-        for block in wall.brick_list:
-            if not block.broken:
-                if self.x + self.width > block.x and self.x < block.x + block.width and \
-                        self.y + self.height > block.y and self.y < block.y + block.height:
-                    block.broken = True
-                    wall.brick_list.remove(block)
-                    self.speed_y *= -1
-                    print(f"- A bola foi rebatida por um bloco!")
-                    print(f"- O bloco na posição X: {block.x}, Y: {block.y} foi destruído!")
 
-                    # Checking block score
-                    if block.y <= 15:
-                        return 1
-                    elif block.y <= 45:
-                        return 3
-                    elif block.y <= 75:
-                        return 5
-                    elif block.y <= 100:
-                        return 7
-                    else:
-                       return 0
+    def paddle_collision(self, paddle):
+        if self.x + self.width > paddle.x and self.x < paddle.x + paddle.width and \
+                self.y + self.height > paddle.y and self.y < paddle.y + paddle.height:
+            self.speed_y *= -1
+            self.hit_text = '- A bola bateu na raquete do jogador!'
+
+    def block_collision(self, wall, score):
+        for block in wall.brick_list:
+            if self.x + self.width > block.x and self.x < block.x + block.width and \
+                    self.y + self.height > block.y and self.y < block.y + block.height:
+
+                score.reward(block.points_to_gain)
+
+                if self.speed_y > 0:
+                    self.speed_y += block.speed_increment
+                else:
+                    self.speed_y -= block.speed_increment
+
+                wall.remove_brick(block)
+                self.speed_y *= -1
+                self.hit_text = (f"- A bola foi rebatida por um bloco!\n"
+                                 f"- O bloco na posição X: {block.x}, Y: {block.y} foi destruído!")
 

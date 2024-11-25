@@ -4,9 +4,8 @@ import sys
 from modules import game
 
 if __name__ == '__main__':
+    # Initializing the game class
     game = game.Game()
-
-    # Adding other classes to the game class
     game.reset_game()
 
     game.run()

@@ -1,6 +1,6 @@
 class Paddle:
     def __init__(self):
-        self.width = 60
+        self.width = 100
         self.height = 3
         self.speed = 10
         self.x = 300
@@ -12,7 +12,7 @@ class Paddle:
     def reset(self):
         self.x = 300
         self.y = 680
-        self.width = 60
+        self.width = 100
 
     def shrink_paddle(self):
         self.width = 20
