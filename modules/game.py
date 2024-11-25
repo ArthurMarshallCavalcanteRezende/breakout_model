@@ -1,42 +1,101 @@
 # Here is the main code to run the "Game"
-
-import ball
-import paddle
+import time
 import keyboard
+import os
 
-# Screen sizes
+from modules import ball
+from modules import paddle
+from modules import score
 
-screen_width = 600
-screen_height = 700
+# "Game" is a class, and serves access to all variables inside it along with the main loop
+class Game:
+    def __init__(self):
+        # Screen sizes
+        self.screen_width = 600
+        self.screen_height = 700
+        self.FPS = 60
+        self.tick = 0
 
-# Game loop
-running_game = True
+        # Game loop
+        self.running = True
+        self.on_menu = True
 
-# Instances
-ball_instance = ball.Ball()
-paddle_instance = paddle.Paddle()
+        # Classes (they are added in "main")
+        self.ball = ball.Ball()
+        self.paddle = paddle.Paddle()
+        self.score = score.Score()
 
-print("-- Insira S para iniciar o jogo --")
-start_game = str(input("Começar o jogo?\n"))
+        # Text information to print
+        self.HUD_text = '----- BREAKOUT MODEL -----'
+        self.clear_space_text = 8 * '\n'
 
-while running_game:
-         # Ball variables
-        ball_x = ball_instance.x
-        ball_y = ball_instance.y
+    def reset_game(self):
+        print(self.clear_space_text)
+        print('---------- MENU ----------')
+        self.score.draw()
+        print('\n- Aperte ENTER para iniciar')
 
-        # Paddle Initial position
-        paddle_x = paddle_instance.x
-        paddle_y = paddle_instance.y
+        self.score.reset()
+        self.ball.reset()
+        self.on_menu = True
 
+    def run(self):
         # Starting ball movement
-        ball_instance.start_moving()
-        ball_instance.ball_movement()
-        ball_instance.border_collision(screen_width, screen_height, ball_x, ball_y)
+        frame_duration = 1 / self.FPS
 
+        while self.running:
+            self.tick += 1
+
+            # making sure the game runs at 60 frames per second
+            start_time = time.time()
+            elapsed_time = time.time() - start_time
+
+            if elapsed_time < frame_duration:
+                time.sleep(frame_duration - elapsed_time)
+
+            self.handle_events()
+
+            if not self.on_menu:
+                self.update_game()
+
+            self.draw()
+
+
+    def handle_events(self):
         # Player paddle movement
-        if keyboard.is_pressed('left') or keyboard.is_pressed('right'):
-             paddle_instance.paddle_movement()
+        if self.on_menu:
+            if keyboard.is_pressed('enter'):
+                self.on_menu = False
+                self.ball.toggle_movement(True)
+
+        else:
+            if keyboard.is_pressed('left'):
+                 self.paddle.move('left')
+            if keyboard.is_pressed('right'):
+                 self.paddle.move('right')
+
 
         if keyboard.is_pressed('esc'):
-            print("Obrigado por jogar.")
-            break
+            print("Encerrando o programa.")
+            self.running = False
+
+    def update_game(self):
+        # Finishing game if needed
+        attempts = self.score.attempts
+        if attempts >= 4: self.reset_game()
+
+        # Updating the ball and checking collisions
+        self.ball.update()
+        self.ball.border_collision(self, self.screen_width, self.screen_height)
+
+
+    def draw(self):
+        # Atualizando "tela" lentamente
+        if self.tick % 30 == 0:
+            if not self.on_menu:
+                print(self.clear_space_text)
+
+                print(self.HUD_text)
+                self.score.draw()
+                self.ball.draw()
+                self.paddle.draw()

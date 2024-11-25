@@ -1,36 +1,71 @@
+BASE_X = 300
+BASE_Y = 300
+
+BASE_SPEED_X = 4
+BASE_SPEED_Y = 4
+
 class Ball:
-    def __init__(self, width=3, height=3, speed_x=5, speed_y=5):
+    def __init__(self, width=3, height=3):
         self.width = width
         self.height = height
-        self.x = 300
-        self.y = 300
-        self.speed_x = speed_x
-        self.speed_y = speed_y
+        self.x = BASE_X
+        self.y = BASE_Y
+        self.speed_x = BASE_SPEED_X
+        self.speed_y = BASE_SPEED_Y
+
+        self.moving = False
+        self.can_break_brick = True
+        self.hit = None
+
+        self.wall_tick = 0
+        self.hits = 0
+
+    def toggle_movement(self, toggle):
+        self.moving = toggle
+
+    def reset(self):
+        self.x = BASE_X
+        self.y = BASE_Y
+        self.speed_x = BASE_SPEED_X
+        self.speed_y = BASE_SPEED_Y
         self.moving = False
 
-    def start_moving(self):
-        self.moving = True
+    def update(self):
+        self.wall_tick += 1
 
-    def stop_moving(self):
-        print("A bola está parada")
-
-    def ball_movement(self):
         if self.moving:
-            ball_x = self.x + self.speed_x
-            ball_y = self.y + self.speed_y
-            return ball_x, ball_y, "A bola se movimenta para ({}, {}).".format(ball_x, ball_y)
-        return self.x, self.y, "A bola está parada."
+            self.x += self.speed_x
+            self.y += self.speed_y
 
-    def border_collision(self, max_width, max_height, ball_x, ball_y):
-        new_speed_x = self.speed_x
-        new_speed_y = self.speed_y
+        return self.x, self.y
 
-        if ball_x <= 0 or ball_x + self.width >= max_width:
-            new_speed_x *= -1
-        if ball_y <= 0 or ball_y + self.height >= max_height:
-            new_speed_y *= -1
+    def border_collision(self, game, max_width, max_height):
+        self.hit = None
 
-        collided = (new_speed_x != self.speed_x or new_speed_y != self.speed_y)
-        if collided:
-            return new_speed_x, new_speed_y,
-        return new_speed_x, new_speed_y,
+        if self.wall_tick > 15:
+            # Checando colisão com paredes
+            if self.x <= 0 or self.x + self.width >= max_width:
+                self.wall_tick = 0
+                self.speed_x *= -1
+
+                self.hit = '- Bola bateu na parede!'
+
+            # Checando colisão com teto
+            if self.y <= 0:
+                self.wall_tick = 0
+                self.speed_y *= -1
+
+                self.hit = '- Bola bateu no teto!'
+
+            # Checando colisão com chão
+            if self.y + self.height >= max_height:
+                self.wall_tick = 0
+                self.speed_y *= -1
+
+                game.score.penalty()
+
+                self.hit = '- Bola bateu no chão!'
+
+    def draw(self):
+        print('\n||[BALL] X: {:03d} | Y: {:03d}'.format(self.x, self.y))
+        if self.hit: print(self.hit)
