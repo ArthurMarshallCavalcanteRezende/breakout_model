@@ -12,14 +12,14 @@ class Paddle:
     def paddle_movement(self, x):
         player_position = x
         if keyboard.is_pressed('left'):
-            if player_position <= -300:
+            if player_position == 10:
                 print("O jogador está na parede esquerda.")
             else:
                 print("O jogador moveu-se para a esquerda.")
                 player_position -= self.speed
 
         elif keyboard.is_pressed('right'):
-            if player_position >= 300:
+            if player_position == 590:
                 print("O jogador está na parede direita.")
             else:
                 print("O jogador moveu-se para a direita.")
