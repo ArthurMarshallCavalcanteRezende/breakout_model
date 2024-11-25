@@ -43,29 +43,53 @@ class Ball:
         self.hit_text = None
 
         if self.wall_tick > 15:
-            # Checando colisão com paredes
+            # Checking wall collision
             if self.x <= 0 or self.x + self.width >= max_width:
                 self.wall_tick = 0
                 self.speed_x *= -1
 
-                self.hit_text = '- Bola bateu na parede!'
+                self.hit_text = '- A bola bateu na parede!'
 
-            # Checando colisão com teto
+            # Checking top collision
             if self.y <= 0:
                 self.wall_tick = 0
                 self.speed_y *= -1
 
-                self.hit_text = '- Bola bateu no teto!'
+                self.hit_text = '- A bola bateu no teto!'
 
-            # Checando colisão com chão
+            # Checking floor collision
             if self.y + self.height >= max_height:
                 self.wall_tick = 0
                 self.speed_y *= -1
 
                 game.score.penalty()
 
-                self.hit_text = '- Bola bateu no chão!'
+                self.hit_text = '- A bola bateu no chão!'
 
     def draw(self):
         print('\n||[BALL] X: {:03d} | Y: {:03d}'.format(self.x, self.y))
         if self.hit_text: print(self.hit_text)
+
+    def block_collision(self, wall):
+        for block in wall.brick_list:
+            if not block.broken:
+                if self.x + self.width > block.x and self.x < block.x + block.width and \
+                        self.y + self.height > block.y and self.y < block.y + block.height:
+                    block.broken = True
+                    wall.brick_list.remove(block)
+                    self.speed_y *= -1
+                    print(f"- A bola foi rebatida por um bloco!")
+                    print(f"- O bloco na posição X: {block.x}, Y: {block.y} foi destruído!")
+
+                    # Checking block score
+                    if block.y <= 15:
+                        return 1
+                    elif block.y <= 45:
+                        return 3
+                    elif block.y <= 75:
+                        return 5
+                    elif block.y <= 100:
+                        return 7
+                    else:
+                       return 0
+

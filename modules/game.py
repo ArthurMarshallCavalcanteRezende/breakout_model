@@ -6,6 +6,8 @@ import os
 from modules import ball
 from modules import paddle
 from modules import score
+from modules import walls
+from modules import blocks
 
 # "Game" is a class, and serves access to all variables inside it along with the main loop
 class Game:
@@ -24,16 +26,25 @@ class Game:
         self.ball = ball.Ball()
         self.paddle = paddle.Paddle()
         self.score = score.Score()
+        self.walls = walls.Wall()
 
         # Text information to print
         self.clear_space_text = 8 * '\n'
 
     def reset_game(self):
+        print("-- Lista de Blocos da última partida --")
+        # Blocks last position
+        block_positions = self.walls.get_block_positions()
+        for pos in block_positions:
+            print(f"Block - X: {pos[0]} | Y: {pos[1]}\n")
+
+        # Clearing for menu
         print(self.clear_space_text)
         print('---------- MENU ----------')
         self.score.draw()
         print('\n- Aperte ENTER para iniciar')
 
+        self.walls.create_wall()
         self.score.reset()
         self.ball.reset()
         self.on_menu = True
@@ -86,10 +97,17 @@ class Game:
         # Updating the ball and checking collisions
         self.ball.update()
         self.ball.border_collision(self, self.screen_width, self.screen_height)
+        self.ball.block_collision(self.walls)
+        point_receiver = self.ball.block_collision(self.walls)
+
+        if point_receiver is None:
+            point_receiver = 0
+        elif point_receiver > 0:
+            self.score.reward_hit(point_receiver)
 
 
     def draw(self):
-        # Atualizando "tela" lentamente
+        # Slowly updating screen
         if self.tick % 15 == 0:
             if not self.on_menu:
                 print(self.clear_space_text)
