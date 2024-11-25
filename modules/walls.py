@@ -1,0 +1,1 @@
+print("Here is the main to run the game model.")
