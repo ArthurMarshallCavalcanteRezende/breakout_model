@@ -1,4 +1,4 @@
-# Paddle mechanics
+    # Paddle mechanics
 import keyboard
 
 class paddle:
@@ -11,9 +11,15 @@ class paddle:
     def paddle_movement(self, x):
         player_position = x
         if keyboard.is_pressed('left'):
-            print("O jogador moveu-se para a esquerda.")
-            player_position -= self.speed
+            if player_position <= -300:
+                print("O jogador está na parede esquerda.")
+            else:
+                print("O jogador moveu-se para a esquerda.")
+                player_position -= self.speed
 
         elif keyboard.is_pressed('right'):
-            print("O jogador moveu-se para a direita.")
-            player_position += self.speed
+            if player_position >= 300:
+                print("O jogador está na parede direita.")
+            else:
+                print("O jogador moveu-se para a direita.")
+                player_position += self.speed
