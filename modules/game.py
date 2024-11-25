@@ -34,8 +34,9 @@ while running_game:
         ball_instance.border_collision(screen_width, screen_height, ball_x, ball_y)
 
         # Player paddle movement
-        paddle_instance.paddle_movement(paddle_x)
+        if keyboard.is_pressed('left') or keyboard.is_pressed('right'):
+             paddle_instance.paddle_movement()
 
         if keyboard.is_pressed('esc'):
-            print("Encerrando o programa.")
+            print("Obrigado por jogar.")
             break
