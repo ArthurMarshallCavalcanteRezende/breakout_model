@@ -2,8 +2,8 @@ class Ball:
     def __init__(self, width=3, height=3, speed_x=5, speed_y=5):
         self.width = width
         self.height = height
-        self.x = 0
-        self.y = 0
+        self.x = 300
+        self.y = 300
         self.speed_x = speed_x
         self.speed_y = speed_y
         self.moving = False
@@ -12,7 +12,7 @@ class Ball:
         self.moving = True
 
     def stop_moving(self):
-        self.moving = False
+        print("A bola está parada")
 
     def ball_movement(self):
         if self.moving:

@@ -1,12 +1,13 @@
     # Paddle mechanics
 import keyboard
 
-class paddle:
+class Paddle:
     def __init__(self):
         self.width = 5
         self.height = 3
         self.speed = 5
-        self.x = 0
+        self.x = 300
+        self.y = 680
 
     def paddle_movement(self, x):
         player_position = x

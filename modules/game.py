@@ -11,20 +11,30 @@ screen_height = 700
 
 # Game loop
 running_game = True
-game_interval = True
 
-print("-- Aperta a tecla SPACE para iniciar o jogo --")
+# Instances
+ball_instance = ball.Ball()
+paddle_instance = paddle.Paddle()
+
+print("-- Insira S para iniciar o jogo --")
+start_game = str(input("Começar o jogo?\n"))
+
 while running_game:
-    if game_interval:
-        ball.stop_moving()
-    elif keyboard.is_pressed('space'):
+         # Ball variables
+        ball_x = ball_instance.x
+        ball_y = ball_instance.y
+
+        # Paddle Initial position
+        paddle_x = paddle_instance.x
+        paddle_y = paddle_instance.y
+
         # Starting ball movement
-        ball.start_moving()
-        ball.ball_movement()
-        ball.border_collision()
+        ball_instance.start_moving()
+        ball_instance.ball_movement()
+        ball_instance.border_collision(screen_width, screen_height, ball_x, ball_y)
 
         # Player paddle movement
-        paddle.paddle_movement()
+        paddle_instance.paddle_movement(paddle_x)
 
         if keyboard.is_pressed('esc'):
             print("Encerrando o programa.")
