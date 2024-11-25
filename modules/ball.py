@@ -15,7 +15,7 @@ class Ball:
 
         self.moving = False
         self.can_break_brick = True
-        self.hit = None
+        self.hit_text = None
 
         self.wall_tick = 0
         self.hits = 0
@@ -40,7 +40,7 @@ class Ball:
         return self.x, self.y
 
     def border_collision(self, game, max_width, max_height):
-        self.hit = None
+        self.hit_text = None
 
         if self.wall_tick > 15:
             # Checando colisão com paredes
@@ -48,14 +48,14 @@ class Ball:
                 self.wall_tick = 0
                 self.speed_x *= -1
 
-                self.hit = '- Bola bateu na parede!'
+                self.hit_text = '- Bola bateu na parede!'
 
             # Checando colisão com teto
             if self.y <= 0:
                 self.wall_tick = 0
                 self.speed_y *= -1
 
-                self.hit = '- Bola bateu no teto!'
+                self.hit_text = '- Bola bateu no teto!'
 
             # Checando colisão com chão
             if self.y + self.height >= max_height:
@@ -64,8 +64,8 @@ class Ball:
 
                 game.score.penalty()
 
-                self.hit = '- Bola bateu no chão!'
+                self.hit_text = '- Bola bateu no chão!'
 
     def draw(self):
         print('\n||[BALL] X: {:03d} | Y: {:03d}'.format(self.x, self.y))
-        if self.hit: print(self.hit)
+        if self.hit_text: print(self.hit_text)

@@ -26,7 +26,6 @@ class Game:
         self.score = score.Score()
 
         # Text information to print
-        self.HUD_text = '----- BREAKOUT MODEL -----'
         self.clear_space_text = 8 * '\n'
 
     def reset_game(self):
@@ -91,11 +90,11 @@ class Game:
 
     def draw(self):
         # Atualizando "tela" lentamente
-        if self.tick % 30 == 0:
+        if self.tick % 15 == 0:
             if not self.on_menu:
                 print(self.clear_space_text)
 
-                print(self.HUD_text)
+                print('----- BREAKOUT MODEL -----')
                 self.score.draw()
                 self.ball.draw()
                 self.paddle.draw()

@@ -6,32 +6,33 @@ class Paddle:
         self.x = 300
         self.y = 680
 
-        self.moving_left = False
-        self.moving_right = False
         self.shrink = False
-
-        self.collide = None
+        self.collide_text = None
 
     def reset(self):
         self.x = 300
         self.y = 680
+        self.width = 60
+
+    def shrink_paddle(self):
+        self.width = 20
 
     def move(self, direction):
-        self.collide = None
+        self.collide_text = None
 
         if direction == 'left':
             if self.x - self.speed >= 0:
                 self.x -= self.speed
             else:
-                self.collide = "O jogador está na parede esquerda."
+                self.collide_text = "O jogador está na parede esquerda."
         elif direction == 'right':
             if self.x + self.width + self.speed <= 600:
                 self.x += self.speed
             else:
-                self.collide = "O jogador está na parede direita."
+                self.collide_text = "O jogador está na parede direita."
 
 
     def draw(self):
         print('\n||[PADDLE] X: {:03d} | Y: {:03d}'.format(self.x, self.y))
-        if self.collide: print(self.collide)
+        if self.collide_text: print(self.collide_text)
 

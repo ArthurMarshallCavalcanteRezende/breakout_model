@@ -3,11 +3,6 @@
 import sys
 from modules import game
 
-# Screen sizes
-
-screen_width = 600
-screen_height = 700
-
 if __name__ == '__main__':
     game = game.Game()
 
