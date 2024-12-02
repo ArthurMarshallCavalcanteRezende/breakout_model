@@ -1,7 +1,7 @@
 # Creating wall of blocks
-from modules.blocks import Block
+from modules.Bricks import Bricks
 
-class Wall:
+class BrickWalls:
     def __init__(self):
         self.brick_list = []
 
@@ -30,8 +30,8 @@ class Wall:
                     points_to_gain = 1
                     speed_increment = 0
 
-                new_block = Block(x, y, points_to_gain, speed_increment)
-                self.brick_list.append(new_block)
+                new_brick = Bricks(x, y, points_to_gain, speed_increment)
+                self.brick_list.append(new_brick)
 
     def get_block_positions(self):
         return [(block.x, block.y) for block in self.brick_list]

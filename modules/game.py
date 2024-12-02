@@ -5,7 +5,8 @@ import keyboard
 from modules import ball
 from modules import paddle
 from modules import score
-from modules import walls
+from modules import BrickWalls
+from modules import ScreenWalls
 
 # "Game" is a class, and serves access to all variables inside it along with the main loop
 class Game:
@@ -24,7 +25,8 @@ class Game:
         self.ball = ball.Ball()
         self.paddle = paddle.Paddle()
         self.score = score.Score()
-        self.walls = walls.Wall()
+        self.brick_walls = BrickWalls.BrickWalls()
+        self.screen_walls = ScreenWalls.ScreenWalls()
 
         # Text information to print
         self.clear_space_text = 8 * '\n'
@@ -32,7 +34,7 @@ class Game:
     def reset_game(self):
         print("-- Lista de Blocos da última partida --")
         # Blocks last position
-        block_positions = self.walls.get_block_positions()
+        block_positions = self.brick_walls.get_block_positions()
 
         for pos in block_positions:
             print(f"Block - X: {pos[0]} | Y: {pos[1]}")
@@ -43,7 +45,13 @@ class Game:
         self.score.draw()
         print('\n- Aperte ENTER para iniciar')
 
-        self.walls.create_wall()
+        # Creating white screen walls
+        self.screen_walls.draw("LEFT")
+        self.screen_walls.draw("RIGHT")
+        self.screen_walls.draw("UP")
+
+        # Reset other assets
+        self.brick_walls.create_wall()
         self.score.reset()
         self.ball.reset()
         self.on_menu = True
@@ -98,7 +106,7 @@ class Game:
         self.ball.update()
         self.ball.paddle_collision(self.paddle)
         self.ball.border_collision(self, self.screen_width, self.screen_height)
-        self.ball.block_collision(self.walls, self.score)
+        self.ball.block_collision(self.brick_walls, self.score)
 
 
     def draw(self):
